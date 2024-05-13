@@ -1271,13 +1271,13 @@ class query_CH_test(TransformationSpark):
         logger.info(f"Обновление из каталогов")
         UpCats()
 
-        logger.info(f"Обновление стран для ряда партнеров")
-        isoPRJs(110)
-        isoPRJs(116)
-
 
         logger.info(f"Обновление данных по трейлерам")
         UpTrailers()
+        
+        logger.info(f"Обновление стран для ряда партнеров")
+        isoPRJs(110)
+        isoPRJs(116)
 
 def main():
     transformation = query_CH_test(
