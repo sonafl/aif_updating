@@ -20,10 +20,6 @@ import datetime
 import pymongo
 from clickhouse_driver import Client
 
-
-
-
-
 REQUIRED_PARAMS = [
     'TransformationName',
     'Output.ClickHouse.schema1',
@@ -98,6 +94,10 @@ class query_CH_test(TransformationSpark):
         update_log = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table5')
         country = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table6')
         trailers = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table7')
+
+        logger.info(f'Подключаюсь к Mongo')
+        conn = pymongo.MongoClient('mongodb://metrixuser01:Jv9rkjjwFFzfhyTalviv@devdvinmongodb02.aeroport.tns:27017/metrix?authSource=metrix')
+        db = conn['metrix']
 
         def inCat(zz): 
            client.execute('INSERT INTO {new_catalog} ("hashKey", "hashPRJKey", "OriginalItemID", "catalogid", "FullTitle", "MasterTitle", "IsSeries", "Project", "SeasonNum", "EpisodeNum", "ProdYear", "ProdCountry", "isoCountry", "uploadtime", "editor") VALUES', zz)
