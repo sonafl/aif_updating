@@ -1258,6 +1258,73 @@ class query_CH_test(TransformationSpark):
             for p in parn:
                 catID = part[p]['cat'] 
                 main(catID)	
+                
+        def get_fof():  
+     
+            q = "SELECT  IsMaster, hashKey, hashPRJKey, OriginalItemID, catalogid, FullTitle, MasterTitle, IsSeries, \
+            Project, SeasonNum, EpisodeNum, ProdYear, ProdCountry, isoCountry, uploadtime, editor, IsTrailer, Duration, ReleaseDate \
+            FROM {remarka} \
+            where ( lowerUTF8(FullTitle) like '%фоф%' OR lowerUTF8(FullTitle) like '%о фильме%' \
+            OR lowerUTF8(MasterTitle) like '%фоф%' OR lowerUTF8(MasterTitle) like '%о фильме%' ) \
+            AND IsSeries = TRUE" 
+              
+            lst = client.execute(q) 
+            dfp = pd.DataFrame(lst, columns=['IsMaster', 'hashKey', 'hashPRJKey', 'OriginalItemID', 'catalogid', 'FullTitle', 'MasterTitle', 'IsSeries', 'Project', 'SeasonNum', 'EpisodeNum', 'ProdYear', 'ProdCountry', 'isoCountry', 'uploadtime', 'editor', 'IsTrailer', 'Duration', 'ReleaseDate'])
+            return dfp
+
+        def fof(): 
+            dfp = get_fof() 
+            total = len(dfp) 
+            sds = []  
+            if total>0:
+                for index, row in dfp.iterrows():
+                    
+                    IsMaster= row['IsMaster'] 
+                    IsTrailer= row['IsTrailer'] 
+                    hashKey = row['hashKey']
+                    hashPRJKey = row['hashPRJKey'] 
+                    OriginalItemID = row['OriginalItemID']  
+                    iso = row['isoCountry'] 
+                    MasterTitle = row['MasterTitle'] 
+                    IsSeries = False
+                    catalogid = row['catalogid'] 
+                    FullTitle = row['FullTitle'] 
+                    Project = row['Project'] 
+                    SeasonNum = row['SeasonNum'] 
+                    EpisodeNum = row['EpisodeNum'] 
+                    ProdYear = row['ProdYear'] 
+                    ProdCountry = row['ProdCountry'] 
+                    Duration = row['Duration']
+                    ReleaseDate = row['ReleaseDate']
+                    _uploadtime = row['uploadtime'] 
+                    
+                    uploadtime = _uploadtime + datetime.timedelta(hours=1)
+                     
+                    sd = {
+                            "IsMaster" : IsMaster,
+                            "IsTrailer" : IsTrailer,
+                            "hashKey" : hashKey, 
+                            "hashPRJKey" : hashPRJKey,
+                            "OriginalItemID":OriginalItemID,
+                            "catalogid": catalogid,
+                            "FullTitle": FullTitle,
+                            "MasterTitle": MasterTitle,
+                            "IsSeries" : IsSeries,
+                            "Project": Project,
+                            "SeasonNum": SeasonNum,
+                            "EpisodeNum": EpisodeNum,
+                            "ProdYear": ProdYear,
+                            "ProdCountry": ProdCountry,
+                            "isoCountry": iso,
+                            "uploadtime": uploadtime,
+                            "Duration": Duration, 
+                            "ReleaseDate" :ReleaseDate,
+                            "editor": 'Up FOF' }
+        
+                    sds.append(sd) 
+                      
+                if len(sds) > 0: inCatz(sds)  
+
 
         logger.info(f'Запускаем обновление')		
 
@@ -1280,6 +1347,10 @@ class query_CH_test(TransformationSpark):
         logger.info(f"Обновление стран для ряда партнеров")
         isoPRJs(110)
         isoPRJs(116)
+
+        
+        logger.info(f"Обновление данных по ФОФ")
+        fof()
 
 def main():
     transformation = query_CH_test(
