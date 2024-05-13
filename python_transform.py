@@ -1,28 +1,25 @@
-import pandas as pd
-import time
-import hashlib
-import itertools
-from string import punctuation
-import re
-from datetime import datetime, timedelta
-import os 
-import datetime
 import sys
 from mediascope.bdp_python_utils.de.transformations.spark import TransformationSpark
 from mediascope.bdp_python_utils.de.common import logger
 from mediascope.bdp_python_utils.common._data_operations import str_to_bool
 from pyspark.sql.utils import AnalysisException
 from pyspark.sql.types import StringType
-import subprocess
+import pandas as pd
+import time
+import yake
+from tabulate import tabulate
+import hashlib
+import itertools
+from string import punctuation
+import re
+from transliterate import slugify
+import requests
+from datetime import datetime, timedelta
+import os 
+import datetime
+import pymongo
+from clickhouse_driver import Client
 
-# output1 = subprocess.run(["pip", "install", "yake"], check=True, stdout=subprocess.PIPE).stdout
-# logger.info(output1.decode())
-# output2 = subprocess.run(["pip", "install", "tabulate"], check=True, stdout=subprocess.PIPE).stdout
-# logger.info(output2.decode())
-# output3 = subprocess.run(["pip", "install", "transliterate"], check=True, stdout=subprocess.PIPE).stdout
-# logger.info(output3.decode())
-# output4 = subprocess.run(["pip", "install", "requests"], check=True, stdout=subprocess.PIPE).stdout
-# logger.info(output4.decode())
 
 # MONGO!
 
