@@ -21,14 +21,8 @@ import pymongo
 from clickhouse_driver import Client
 
 
-# MONGO!
 
-import yake
-from tabulate import tabulate
-from transliterate import slugify
-import requests
 
-from clickhouse_driver import Client
 
 REQUIRED_PARAMS = [
     'TransformationName',
