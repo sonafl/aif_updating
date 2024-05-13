@@ -31,7 +31,8 @@ REQUIRED_PARAMS = [
     'Output.ClickHouse.table4',
     'Output.ClickHouse.table5', 
     'Output.ClickHouse.table6', 
-    'Output.ClickHouse.table7'
+    'Output.ClickHouse.table7', 
+    'Output.ClickHouse.table8'
 ]
 
 
@@ -94,6 +95,7 @@ class query_CH_test(TransformationSpark):
         update_log = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table5')
         country = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table6')
         trailers = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table7')
+        remarka = self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table8')
 
         logger.info(f'Подключаюсь к Mongo')
         conn = pymongo.MongoClient('mongodb://metrixuser01:Jv9rkjjwFFzfhyTalviv@devdvinmongodb02.aeroport.tns:27017/metrix?authSource=metrix')
