@@ -1143,11 +1143,10 @@ class query_CH_test(TransformationSpark):
             N AS  ( SELECT Project, OriginalItemID, IsTrailer, MAX(uploadtime) AS updatedate FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table1')} WHERE catalogid = "+str(catalogid)+f"  GROUP BY Project, OriginalItemID, IsTrailer ), \
             T AS  ( SELECT ContentUnitID, MAX(upload_datetime) AS uploaddatetime FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table7')} WHERE  IsTrailer = TRUE  and ContentUnitCatalogID = '"+str(catalogid)+f"' GROUP BY ContentUnitID), \
             TT AS ( SELECT ContentUnitID, IsTrailer FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table7')} AS TM JOIN T ON T.ContentUnitID = TM.ContentUnitID AND T.uploaddatetime = TM.upload_datetime WHERE  IsTrailer = TRUE  and ContentUnitCatalogID = '"+str(catalogid)+f"' GROUP BY ContentUnitID, IsTrailer) \
-            SELECT distinct TT.IsTrailer, NC.* \
+            SELECT distinct TT.IsTrailer, NC.IsMaster, NC.hashKey, NC.hashPRJKey, NC.OriginalItemID, NC.catalogid, NC.FullTitle,NC.MasterTitle,NC.IsSeries,  NC.Project, NC.SeasonNum,  NC.EpisodeNum,  NC.ProdYear, NC.ProdCountry, NC.isoCountry, NC.uploadtime, NC.editor,  NC.IsTrailer, NC.Duration, NC.ReleaseDate \
             FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table1')} AS NC JOIN N ON N.OriginalItemID = NC.OriginalItemID AND N.updatedate = NC.uploadtime JOIN TT ON NC.OriginalItemID = TT.ContentUnitID \
             WHERE NC.catalogid = "+str(catalogid)+" and TT.IsTrailer = TRUE  \
             SETTINGS distributed_product_mode = 'global'" 
-            
             lst = client.execute(q)
             dfp = pd.DataFrame(lst, columns=['TT.IsTrailer', 'NC.IsMaster', 'NC.hashKey', 'NC.hashPRJKey', 'NC.OriginalItemID', 'NC.catalogid', 'NC.FullTitle', 'NC.MasterTitle', 'NC.IsSeries', 'NC.Project', 'NC.SeasonNum', 'NC.EpisodeNum', 'NC.ProdYear', 'NC.ProdCountry', 'NC.isoCountry', 'NC.uploadtime', 'NC.editor', 'NC.IsTrailer'])
             return dfp
@@ -1175,7 +1174,7 @@ class query_CH_test(TransformationSpark):
             T AS  ( SELECT ContentUnitID, MAX(upload_datetime) AS uploaddatetime FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table7')} WHERE  ContentUnitCatalogID = '"+str(catalogid)+f"' GROUP BY ContentUnitID), \
             TT AS ( SELECT ContentUnitID, IsTrailer, TM.upload_datetime FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table7')} AS TM JOIN T ON T.ContentUnitID = TM.ContentUnitID AND T.uploaddatetime = TM.upload_datetime \
             WHERE  ContentUnitCatalogID = '"+str(catalogid)+f"' GROUP BY ContentUnitID, IsTrailer, upload_datetime ) \
-            SELECT distinct TT.IsTrailer, NC.* \
+            SELECT distinct TT.IsTrailer, NC.IsMaster,NC.hashKey, NC.hashPRJKey, NC.OriginalItemID, NC.catalogid, NC.FullTitle, NC.MasterTitle,  NC.IsSeries,  NC.Project,NC.SeasonNum, NC.EpisodeNum, NC.ProdYear, NC.ProdCountry, NC.isoCountry, NC.uploadtime, NC.editor, NC.IsTrailer, NC.Duration, NC.ReleaseDate\
             FROM {self.args.get('Output.ClickHouse.schema1') + '.' + self.args.get('Output.ClickHouse.table1')} AS NC JOIN N ON N.OriginalItemID = NC.OriginalItemID AND N.updatedate = NC.uploadtime JOIN TT ON NC.OriginalItemID = TT.ContentUnitID \
             WHERE NC.catalogid = "+str(catalogid)+"  \
             and editor NOT  IN ( 'marina.korovina', 'Elena.Radyukova', 'Marina.Korovina', 'Moderator1', 'Admin', 'admin' ) \
